@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Longevity Strength</title>
+
+  <!-- PWA / iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Strength" />
+  <meta name="theme-color" content="#3d5a3e" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="manifest" href="manifest.json" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #faf6f0;
+      color: #333;
+      padding: 0 0 24px;
+      padding-top: env(safe-area-inset-top);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+      padding-bottom: env(safe-area-inset-bottom);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 24px 16px 12px;
+    }
+    .header .gym {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #222;
+    }
+    .header .meta {
+      font-size: 13px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      margin: 0 12px 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e0d8cc;
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 14px 8px;
+      cursor: pointer;
+      background: #fff;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #555;
+      transition: background 0.2s, color 0.2s;
+    }
+    .tab small {
+      display: block;
+      font-weight: 400;
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px;
+    }
+    .tab.active {
+      background: #3d5a3e;
+      color: #fff;
+    }
+    .tab.active small { color: #c8d8c8; }
+    .tab:not(:last-child) { border-right: 1px solid #e0d8cc; }
+
+    /* Section card */
+    .session { display: none; padding: 0 12px; }
+    .session.active { display: block; }
+
+    .warmup, .cooldown {
+      background: #f5f0e6;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: #666;
+      line-height: 1.5;
+    }
+    .warmup strong, .cooldown strong {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 4px;
+    }
+
+    /* Superset badges row */
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .badge {
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      color: #777;
+      background: #fff;
+    }
+
+    /* Exercise card */
+    .exercise {
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #ece6da;
+      transition: opacity 0.3s;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .exercise:active {
+      background: #f9f5ed;
+    }
+    .exercise.checked { opacity: 0.5; }
+    .exercise.checked .ex-name { text-decoration: line-through; color: #999; }
+
+    .exercise input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      cursor: pointer;
+      accent-color: #3d5a3e;
+    }
+
+    .ex-id {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+      border: 2px solid currentColor;
+      transition: background 0.2s;
+    }
+    .exercise.checked .ex-id {
+      background: currentColor;
+    }
+    .exercise.checked .ex-id span {
+      color: #fff;
+    }
+
+    .ex-body { flex: 1; min-width: 0; }
+    .ex-name {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .ex-detail {
+      font-size: 13px;
+      color: #999;
+      margin-top: 3px;
+    }
+
+    /* Movement pattern tag */
+    .tag {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: #fff;
+    }
+    .tag-hinge  { background: #b8963e; }
+    .tag-push   { background: #4a7c4f; }
+    .tag-squat  { background: #c9a033; }
+    .tag-pull   { background: #5a7a52; }
+    .tag-core   { background: #8b7355; }
+    .tag-carry  { background: #7a7a6a; }
+    .tag-grip   { background: #6b6b6b; }
+
+    /* Reset button */
+    .reset-wrap {
+      text-align: center;
+      margin-top: 16px;
+      margin-bottom: 24px;
+    }
+    .reset-btn {
+      font-size: 13px;
+      padding: 10px 24px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fff;
+      color: #888;
+      cursor: pointer;
+    }
+    .reset-btn:active { background: #f5f0e6; }
+
+    /* Progress */
+    .progress {
+      text-align: center;
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 8px;
+    }
+
+    /* Weight inputs */
+    .weights {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+    .weight-input {
+      width: 44px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1.5px solid #ddd;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      background: #faf8f4;
+      color: #333;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .weight-input:focus {
+      border-color: #aaa;
+      background: #fff;
+    }
+    .weight-input::placeholder {
+      font-weight: 600;
+      font-size: 11px;
+    }
+    .weight-input.person-e {
+      border-color: #b0d8d9;
+    }
+    .weight-input.person-e::placeholder { color: #3a8a8c; }
+    .weight-input.person-e:focus { border-color: #3a8a8c; }
+
+    .weight-input.person-k {
+      border-color: #e4bbb2;
+    }
+    .weight-input.person-k::placeholder { color: #c47a6a; }
+    .weight-input.person-k:focus { border-color: #c47a6a; }
+
+    /* Bottom spacer so content doesn't hide behind timers */
+    .bottom-spacer { height: 100px; }
+
+    /* Floating rest timers */
+    .timers {
+      position: fixed;
+      bottom: 24px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      padding-bottom: env(safe-area-inset-bottom);
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .timer {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      pointer-events: auto;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+    }
+
+    .timer svg {
+      width: 72px;
+      height: 72px;
+      transform: rotate(-90deg);
+    }
+
+    .timer-bg {
+      fill: #fff;
+      stroke: #d5cfc5;
+      stroke-width: 4;
+    }
+
+    .timer-ring {
+      fill: none;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 192;
+      stroke-dashoffset: 192;
+      transition: stroke-dashoffset 0.1s linear;
+    }
+
+    .timer[data-person="e"] .timer-ring { stroke: #3a8a8c; }
+    .timer[data-person="k"] .timer-ring { stroke: #c47a6a; }
+
+    .timer-center {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timer-initial {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .timer[data-person="e"] .timer-initial { color: #3a8a8c; }
+    .timer[data-person="k"] .timer-initial { color: #c47a6a; }
+
+    .timer-countdown {
+      font-size: 11px;
+      font-weight: 600;
+      color: #999;
+      margin-top: 2px;
+      line-height: 1;
+    }
+
+    .timer.running .timer-initial { color: #fff; }
+    .timer.running .timer-countdown { color: rgba(255,255,255,0.85); }
+
+    .timer[data-person="e"].running .timer-bg { fill: #3a8a8c; }
+    .timer[data-person="k"].running .timer-bg { fill: #c47a6a; }
+
+    .timer.done .timer-ring {
+      stroke-dashoffset: 0 !important;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    .timer.done {
+      animation: pulse 0.4s ease 3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="gym">425 Fitness Issaquah</div>
+  <h1>Longevity Strength</h1>
+  <div class="meta">2x/week &middot; Full Body &middot; 45-55 min</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="a">Session A<small>Hinge &amp; Push</small></button>
+  <button class="tab" data-tab="b">Session B<small>Squat &amp; Pull</small></button>
+</div>
+
+<!-- SESSION A -->
+<div class="session active" id="session-a">
+  <div class="warmup">
+    <strong>Warm-Up (8-10 min)</strong>
+    3 min bike or brisk walk &rarr; Hip 90/90s, shoulder dislocates &rarr; Glute bridges, dead bugs (8-10 min total)
+  </div>
+
+  <div class="badges">
+    <span class="badge">A1+A2 Superset</span>
+    <span class="badge">B1+B2 Superset</span>
+    <span class="badge">C1+C2 Superset</span>
+    <span class="badge">Rest 90s Between</span>
+  </div>
+
+  <div class="exercise" data-id="a1">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#b8963e"><span>A1</span></div>
+    <div class="ex-body">
+      <div class="ex-name">DB Romanian Deadlift <span class="tag tag-hinge">Hinge</span></div>
+      <div class="ex-detail">3 &times; 8 &middot; Dumbbells</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="a2">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#4a7c4f"><span>A2</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Incline DB Press <span class="tag tag-push">Push</span></div>
+      <div class="ex-detail">3 &times; 8-10 &middot; Adjustable Bench + DBs</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="b1">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#c9a033"><span>B1</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Bulgarian Split Squat <span class="tag tag-squat">Squat</span></div>
+      <div class="ex-detail">3 &times; 8/side &middot; Bench + DBs</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="b2">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#5a7a52"><span>B2</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Rear Delt Machine <span class="tag tag-pull">Pull</span></div>
+      <div class="ex-detail">3 &times; 12-15 &middot; Life Fitness #276</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="c1">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#8b7355"><span>C1</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Pallof Press <span class="tag tag-core">Core</span></div>
+      <div class="ex-detail">2 &times; 10/side &middot; Cable Station</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="c2">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#7a7a6a"><span>C2</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Farmer's Carry <span class="tag tag-carry">Carry</span></div>
+      <div class="ex-detail">2 &times; 45 sec &middot; Heavy Dumbbells</div>
+    </div>
+  </div>
+
+  <div class="cooldown">
+    <strong>Cool-Down (3-5 min)</strong>
+    Static stretches for worked muscles (30-60 sec holds) &middot; Optional: 1-2 min box breathing
+  </div>
+
+  <div class="progress" id="progress-a">0 / 6 completed</div>
+  <div class="reset-wrap"><button class="reset-btn" data-session="a">Reset Session A</button></div>
+</div>
+
+<!-- SESSION B -->
+<div class="session" id="session-b">
+  <div class="warmup">
+    <strong>Warm-Up (8-10 min)</strong>
+    3 min bike &rarr; Bodyweight squats, band pull-aparts &rarr; Dead bugs, single-leg balance (8-10 min total)
+  </div>
+
+  <div class="badges">
+    <span class="badge">A1+A2 Superset</span>
+    <span class="badge">B1+B2 Superset</span>
+    <span class="badge">C1+C2 Superset</span>
+    <span class="badge">Rest 90s Between</span>
+  </div>
+
+  <div class="exercise" data-id="a1">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#c9a033"><span>A1</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Goblet Squat <span class="tag tag-squat">Squat</span></div>
+      <div class="ex-detail">3 &times; 10 &middot; Single DB at Chest</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="a2">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#5a7a52"><span>A2</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Assisted Chin-Up <span class="tag tag-pull">Pull</span></div>
+      <div class="ex-detail">3 &times; 6-10 &middot; Life Fitness #273</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="b1">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#b8963e"><span>B1</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Single-Leg RDL <span class="tag tag-hinge">Hinge</span></div>
+      <div class="ex-detail">3 &times; 8/side &middot; DB in Opposite Hand</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="b2">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#4a7c4f"><span>B2</span></div>
+    <div class="ex-body">
+      <div class="ex-name">DB Overhead Press <span class="tag tag-push">Push</span></div>
+      <div class="ex-detail">3 &times; 8-10 &middot; Dumbbells, Standing</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="c1">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#5a7a52"><span>C1</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Seated Low Row <span class="tag tag-pull">Pull</span></div>
+      <div class="ex-detail">3 &times; 10-12 &middot; Life Fitness #687</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="c2">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#6b6b6b"><span>C2</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Dead Hang <span class="tag tag-grip">Grip</span></div>
+      <div class="ex-detail">2 &times; max hold &middot; Chin-Up Bar on #273</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="d">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#4a7c4f"><span>D</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Pec Fly Machine <span class="tag tag-push">Push</span></div>
+      <div class="ex-detail">2 &times; 12 &middot; Life Fitness #276</div>
+    </div>
+  </div>
+
+  <div class="cooldown">
+    <strong>Cool-Down (3-5 min)</strong>
+    Static stretches for worked muscles (30-60 sec holds) &middot; Optional: 1-2 min box breathing
+  </div>
+
+  <div class="progress" id="progress-b">0 / 7 completed</div>
+  <div class="reset-wrap"><button class="reset-btn" data-session="b">Reset Session B</button></div>
+</div>
+
+<div class="bottom-spacer"></div>
+
+<!-- Rest timers -->
+<div class="timers">
+  <div class="timer" data-person="e">
+    <svg viewBox="0 0 72 72">
+      <circle class="timer-bg" cx="36" cy="36" r="30.5" />
+      <circle class="timer-ring" cx="36" cy="36" r="30.5" />
+    </svg>
+    <div class="timer-center">
+      <div class="timer-initial">E</div>
+      <div class="timer-countdown"></div>
+    </div>
+  </div>
+  <div class="timer" data-person="k">
+    <svg viewBox="0 0 72 72">
+      <circle class="timer-bg" cx="36" cy="36" r="30.5" />
+      <circle class="timer-ring" cx="36" cy="36" r="30.5" />
+    </svg>
+    <div class="timer-center">
+      <div class="timer-initial">K</div>
+      <div class="timer-countdown"></div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
