@@ -1,4 +1,4 @@
-var CACHE_NAME = "workout-v1";
+var CACHE_NAME = "workout-v2";
 var ASSETS = [
   "./",
   "./index.html",
@@ -30,11 +30,19 @@ self.addEventListener("activate", function(e) {
   self.clients.claim();
 });
 
-// Fetch: cache-first, fallback to network
+// Fetch: network-first, fallback to cache (so updates appear immediately)
 self.addEventListener("fetch", function(e) {
   e.respondWith(
-    caches.match(e.request).then(function(cached) {
-      return cached || fetch(e.request);
+    fetch(e.request).then(function(response) {
+      // Update cache with fresh version
+      var clone = response.clone();
+      caches.open(CACHE_NAME).then(function(cache) {
+        cache.put(e.request, clone);
+      });
+      return response;
+    }).catch(function() {
+      // Offline: serve from cache
+      return caches.match(e.request);
     })
   );
 });
