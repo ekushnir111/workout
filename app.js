@@ -3,6 +3,25 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
 
+// Keep screen awake while app is open
+var wakeLock = null;
+
+async function requestWakeLock() {
+  try {
+    if ("wakeLock" in navigator) {
+      wakeLock = await navigator.wakeLock.request("screen");
+    }
+  } catch (e) { /* user denied or not supported */ }
+}
+
+// Request on load and re-request when tab becomes visible again
+requestWakeLock();
+document.addEventListener("visibilitychange", function() {
+  if (document.visibilityState === "visible") {
+    requestWakeLock();
+  }
+});
+
 var STORAGE_KEY = "workout-checks";
 var WEIGHTS_KEY = "workout-weights";
 
