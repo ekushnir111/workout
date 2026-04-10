@@ -155,29 +155,38 @@ for (var s = 0; s < allSessions.length; s++) {
 
 // ── Rest Timers ──
 var TIMER_DURATION = 90; // seconds (matches "Rest 90s Between")
-var RING_LENGTH = 2 * Math.PI * 30.5; // ~191.6, matches stroke-dasharray
+
+function formatTime(secs) {
+  var m = Math.floor(secs / 60);
+  var s = secs % 60;
+  return m + ":" + (s < 10 ? "0" : "") + s;
+}
 
 var timerEls = document.querySelectorAll(".timer");
 for (var ti = 0; ti < timerEls.length; ti++) {
   (function(timer) {
-    var ring = timer.querySelector(".timer-ring");
+    var barFill = timer.querySelector(".timer-bar-fill");
     var countdownEl = timer.querySelector(".timer-countdown");
+    var labelEl = timer.querySelector(".timer-label");
     var intervalId = null;
     var endTime = 0;
+
+    countdownEl.textContent = formatTime(TIMER_DURATION);
 
     function resetTimer() {
       clearInterval(intervalId);
       intervalId = null;
       timer.classList.remove("running", "done");
-      ring.style.strokeDashoffset = RING_LENGTH;
-      countdownEl.textContent = "";
+      barFill.style.width = "0%";
+      countdownEl.textContent = formatTime(TIMER_DURATION);
+      labelEl.textContent = "Rest timer";
     }
 
     function tick() {
       var remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
       var fraction = 1 - (remaining / TIMER_DURATION);
-      ring.style.strokeDashoffset = RING_LENGTH * (1 - fraction);
-      countdownEl.textContent = remaining + "s";
+      barFill.style.width = (fraction * 100) + "%";
+      countdownEl.textContent = formatTime(remaining);
 
       if (remaining <= 0) {
         clearInterval(intervalId);
@@ -185,8 +194,9 @@ for (var ti = 0; ti < timerEls.length; ti++) {
         timer.classList.remove("running");
         timer.classList.add("done");
         countdownEl.textContent = "GO!";
+        labelEl.textContent = "Tap to reset";
         if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-        setTimeout(function() { resetTimer(); }, 3000);
+        setTimeout(function() { resetTimer(); }, 5000);
       }
     }
 
@@ -202,6 +212,7 @@ for (var ti = 0; ti < timerEls.length; ti++) {
       endTime = Date.now() + TIMER_DURATION * 1000;
       timer.classList.add("running");
       timer.classList.remove("done");
+      labelEl.textContent = "Tap to cancel";
       tick();
       intervalId = setInterval(tick, 100);
     });

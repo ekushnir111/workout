@@ -272,96 +272,97 @@
     .weight-input.person-k::placeholder { color: #c47a6a; }
     .weight-input.person-k:focus { border-color: #c47a6a; }
 
-    /* Bottom spacer so content doesn't hide behind timers */
-    .bottom-spacer { height: 100px; }
-
-    /* Floating rest timers */
+    /* Rest timers container */
     .timers {
-      position: fixed;
-      bottom: 24px;
-      left: 0;
-      right: 0;
       display: flex;
-      justify-content: center;
-      gap: 32px;
-      padding-bottom: env(safe-area-inset-bottom);
-      z-index: 100;
-      pointer-events: none;
+      gap: 8px;
+      padding: 0 12px;
+      margin-bottom: 16px;
     }
 
     .timer {
+      flex: 1;
       position: relative;
-      width: 72px;
-      height: 72px;
-      pointer-events: auto;
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid #ece6da;
+      padding: 16px;
       cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
-      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+      overflow: hidden;
+      transition: border-color 0.2s;
     }
+    .timer:active { background: #f9f5ed; }
 
-    .timer svg {
-      width: 72px;
-      height: 72px;
-      transform: rotate(-90deg);
-    }
+    .timer[data-person="e"] { border-color: #b0d8d9; }
+    .timer[data-person="k"] { border-color: #e4bbb2; }
 
-    .timer-bg {
-      fill: #fff;
-      stroke: #d5cfc5;
-      stroke-width: 4;
-    }
-
-    .timer-ring {
-      fill: none;
-      stroke-width: 4;
-      stroke-linecap: round;
-      stroke-dasharray: 192;
-      stroke-dashoffset: 192;
-      transition: stroke-dashoffset 0.1s linear;
-    }
-
-    .timer[data-person="e"] .timer-ring { stroke: #3a8a8c; }
-    .timer[data-person="k"] .timer-ring { stroke: #c47a6a; }
-
-    .timer-center {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+    .timer-top {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
     }
 
     .timer-initial {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
-      line-height: 1;
     }
-
     .timer[data-person="e"] .timer-initial { color: #3a8a8c; }
     .timer[data-person="k"] .timer-initial { color: #c47a6a; }
 
     .timer-countdown {
-      font-size: 11px;
+      font-size: 14px;
       font-weight: 600;
-      color: #999;
-      margin-top: 2px;
-      line-height: 1;
+      color: #bbb;
     }
 
-    .timer.running .timer-initial { color: #fff; }
-    .timer.running .timer-countdown { color: rgba(255,255,255,0.85); }
-
-    .timer[data-person="e"].running .timer-bg { fill: #3a8a8c; }
-    .timer[data-person="k"].running .timer-bg { fill: #c47a6a; }
-
-    .timer.done .timer-ring {
-      stroke-dashoffset: 0 !important;
+    .timer-label {
+      font-size: 11px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
+
+    /* Progress bar track */
+    .timer-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: #eee;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .timer-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.15s linear;
+    }
+    .timer[data-person="e"] .timer-bar-fill { background: #3a8a8c; }
+    .timer[data-person="k"] .timer-bar-fill { background: #c47a6a; }
+
+    /* Running state */
+    .timer.running {
+      border-width: 2px;
+    }
+    .timer[data-person="e"].running { border-color: #3a8a8c; }
+    .timer[data-person="k"].running { border-color: #c47a6a; }
+    .timer.running .timer-countdown { color: #333; }
+
+    /* Done state */
+    .timer.done .timer-countdown {
+      font-weight: 700;
+    }
+    .timer[data-person="e"].done .timer-countdown { color: #3a8a8c; }
+    .timer[data-person="k"].done .timer-countdown { color: #c47a6a; }
+    .timer.done .timer-bar-fill { width: 100% !important; }
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
+      50% { transform: scale(1.02); }
     }
     .timer.done {
       animation: pulse 0.4s ease 3;
@@ -379,6 +380,26 @@
 <div class="tabs">
   <button class="tab active" data-tab="a">Session A<small>Hinge &amp; Push</small></button>
   <button class="tab" data-tab="b">Session B<small>Squat &amp; Pull</small></button>
+</div>
+
+<!-- Rest timers -->
+<div class="timers">
+  <div class="timer" data-person="e">
+    <div class="timer-top">
+      <div class="timer-initial">E</div>
+      <div class="timer-countdown">1:30</div>
+    </div>
+    <div class="timer-label">Rest timer</div>
+    <div class="timer-bar"><div class="timer-bar-fill"></div></div>
+  </div>
+  <div class="timer" data-person="k">
+    <div class="timer-top">
+      <div class="timer-initial">K</div>
+      <div class="timer-countdown">1:30</div>
+    </div>
+    <div class="timer-label">Rest timer</div>
+    <div class="timer-bar"><div class="timer-bar-fill"></div></div>
+  </div>
 </div>
 
 <!-- SESSION A -->
@@ -544,31 +565,6 @@
   <div class="reset-wrap"><button class="reset-btn" data-session="b">Reset Session B</button></div>
 </div>
 
-<div class="bottom-spacer"></div>
-
-<!-- Rest timers -->
-<div class="timers">
-  <div class="timer" data-person="e">
-    <svg viewBox="0 0 72 72">
-      <circle class="timer-bg" cx="36" cy="36" r="30.5" />
-      <circle class="timer-ring" cx="36" cy="36" r="30.5" />
-    </svg>
-    <div class="timer-center">
-      <div class="timer-initial">E</div>
-      <div class="timer-countdown"></div>
-    </div>
-  </div>
-  <div class="timer" data-person="k">
-    <svg viewBox="0 0 72 72">
-      <circle class="timer-bg" cx="36" cy="36" r="30.5" />
-      <circle class="timer-ring" cx="36" cy="36" r="30.5" />
-    </svg>
-    <div class="timer-center">
-      <div class="timer-initial">K</div>
-      <div class="timer-countdown"></div>
-    </div>
-  </div>
-</div>
 
 <script src="app.js"></script>
 
