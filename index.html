@@ -272,101 +272,6 @@
     .weight-input.person-k::placeholder { color: #c47a6a; }
     .weight-input.person-k:focus { border-color: #c47a6a; }
 
-    /* Rest timers container */
-    .timers {
-      display: flex;
-      gap: 8px;
-      padding: 0 12px;
-      margin-bottom: 16px;
-    }
-
-    .timer {
-      flex: 1;
-      position: relative;
-      background: #fff;
-      border-radius: 10px;
-      border: 1px solid #ece6da;
-      padding: 16px;
-      cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      overflow: hidden;
-      transition: border-color 0.2s;
-    }
-    .timer:active { background: #f9f5ed; }
-
-    .timer[data-person="e"] { border-color: #b0d8d9; }
-    .timer[data-person="k"] { border-color: #e4bbb2; }
-
-    .timer-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .timer-initial {
-      font-size: 20px;
-      font-weight: 700;
-    }
-    .timer[data-person="e"] .timer-initial { color: #3a8a8c; }
-    .timer[data-person="k"] .timer-initial { color: #c47a6a; }
-
-    .timer-countdown {
-      font-size: 48px;
-      font-weight: 700;
-      color: #bbb;
-    }
-
-    .timer-label {
-      font-size: 11px;
-      color: #aaa;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* Progress bar track */
-    .timer-bar {
-      height: 6px;
-      border-radius: 3px;
-      background: #eee;
-      margin-top: 10px;
-      overflow: hidden;
-    }
-
-    .timer-bar-fill {
-      height: 100%;
-      border-radius: 3px;
-      width: 0%;
-      transition: width 0.15s linear;
-    }
-    .timer[data-person="e"] .timer-bar-fill { background: #3a8a8c; }
-    .timer[data-person="k"] .timer-bar-fill { background: #c47a6a; }
-
-    /* Running state */
-    .timer.running {
-      border-width: 2px;
-    }
-    .timer[data-person="e"].running { border-color: #3a8a8c; }
-    .timer[data-person="k"].running { border-color: #c47a6a; }
-    .timer.running .timer-countdown { color: #333; }
-
-    /* Done state */
-    .timer.done .timer-countdown {
-      font-weight: 700;
-    }
-    .timer[data-person="e"].done .timer-countdown { color: #3a8a8c; }
-    .timer[data-person="k"].done .timer-countdown { color: #c47a6a; }
-    .timer.done .timer-bar-fill { width: 100% !important; }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-    }
-    .timer.done {
-      animation: pulse 0.4s ease 3;
-    }
   </style>
 </head>
 <body>
@@ -380,26 +285,6 @@
 <div class="tabs">
   <button class="tab active" data-tab="a">Session A<small>Hinge &amp; Push</small></button>
   <button class="tab" data-tab="b">Session B<small>Squat &amp; Pull</small></button>
-</div>
-
-<!-- Rest timers -->
-<div class="timers">
-  <div class="timer" data-person="e">
-    <div class="timer-top">
-      <div class="timer-initial">E</div>
-      <div class="timer-countdown">1:30</div>
-    </div>
-    <div class="timer-label">Rest timer</div>
-    <div class="timer-bar"><div class="timer-bar-fill"></div></div>
-  </div>
-  <div class="timer" data-person="k">
-    <div class="timer-top">
-      <div class="timer-initial">K</div>
-      <div class="timer-countdown">1:30</div>
-    </div>
-    <div class="timer-label">Rest timer</div>
-    <div class="timer-bar"><div class="timer-bar-fill"></div></div>
-  </div>
 </div>
 
 <!-- SESSION A -->
