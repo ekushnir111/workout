@@ -62,7 +62,7 @@
     .tab {
       flex: 1;
       text-align: center;
-      padding: 14px 8px;
+      padding: 14px 6px;
       cursor: pointer;
       background: #fff;
       border: none;
@@ -122,6 +122,12 @@
       border: 1px solid #ddd;
       color: #777;
       background: #fff;
+    }
+    .badge.effort {
+      border-color: #c9a033;
+      color: #8a6a1e;
+      background: #fdf8ec;
+      font-weight: 700;
     }
 
     /* Exercise card */
@@ -205,6 +211,21 @@
     .tag-core   { background: #8b7355; }
     .tag-carry  { background: #7a7a6a; }
     .tag-grip   { background: #6b6b6b; }
+    .tag-arms   { background: #a05a3c; }
+    .tag-calf   { background: #b07050; }
+
+    /* "changed" marker */
+    .chg {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: #a05a3c;
+      background: #fbf1ec;
+      border: 1px solid #e4c9bb;
+    }
 
     /* Reset button */
     .reset-wrap {
@@ -272,6 +293,77 @@
     .weight-input.person-k::placeholder { color: #c47a6a; }
     .weight-input.person-k:focus { border-color: #c47a6a; }
 
+    /* ---------- Plan tab ---------- */
+    .card {
+      background: #fff;
+      border: 1px solid #ece6da;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+    .card h2 {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .card p {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.55;
+    }
+    .card p + p { margin-top: 8px; }
+    .card b { color: #444; }
+
+    .week { display: flex; gap: 4px; }
+    .wd { flex: 1; text-align: center; }
+    .wd b {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #bbb;
+      margin-bottom: 5px;
+    }
+    .wd span {
+      display: block;
+      font-size: 10px;
+      line-height: 1.25;
+      padding: 7px 2px;
+      border-radius: 5px;
+      background: #f5f0e6;
+      color: #999;
+      min-height: 44px;
+    }
+    .wd span.lift { background: #3d5a3e; color: #fff; font-weight: 600; }
+    .wd span.hiit { background: #eae2d2; color: #7a6a4a; font-weight: 600; }
+
+    .vrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid #f0ebe1;
+    }
+    .vrow:last-child { border-bottom: 0; }
+    .vmus { font-size: 12px; font-weight: 600; width: 88px; flex-shrink: 0; }
+    .vbars { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .vbar { height: 6px; border-radius: 2px; background: #ded7c8; }
+    .vbar.aft { background: #4a7c4f; }
+    .vbar.cut { background: #c9a033; }
+    .vnum {
+      font-size: 11px;
+      color: #aaa;
+      width: 50px;
+      text-align: right;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .vnum b { color: #4a7c4f; }
+    .vnum.down b { color: #c9a033; }
+    .vlegend { font-size: 10px; color: #bbb; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -279,12 +371,13 @@
 <div class="header">
   <div class="gym">425 Fitness Issaquah</div>
   <h1>Longevity Strength</h1>
-  <div class="meta">2x/week &middot; Full Body &middot; 45-55 min</div>
+  <div class="meta">2x/week &middot; Full Body &middot; 60-70 min</div>
 </div>
 
 <div class="tabs">
   <button class="tab active" data-tab="a">Session A<small>Hinge &amp; Push</small></button>
   <button class="tab" data-tab="b">Session B<small>Squat &amp; Pull</small></button>
+  <button class="tab" data-tab="p">Plan<small>Week &amp; volume</small></button>
 </div>
 
 <!-- SESSION A -->
@@ -293,15 +386,17 @@
     <span class="badge">A1+A2 Superset</span>
     <span class="badge">B1+B2 Superset</span>
     <span class="badge">C1+C2 Superset</span>
-    <span class="badge">Rest 90s Between</span>
+    <span class="badge">D1+D2 Superset</span>
+    <span class="badge">Rest 120s on A &middot; 90s rest</span>
+    <span class="badge effort">Last set RPE 8-9</span>
   </div>
 
   <div class="exercise" data-id="a1">
     <input type="checkbox" />
     <div class="ex-id" style="color:#b8963e"><span>A1</span></div>
     <div class="ex-body">
-      <div class="ex-name">DB Romanian Deadlift <span class="tag tag-hinge">Hinge</span></div>
-      <div class="ex-detail">3 &times; 8 &middot; Dumbbells</div>
+      <div class="ex-name">Barbell Romanian Deadlift <span class="tag tag-hinge">Hinge</span> <span class="chg">4 sets</span></div>
+      <div class="ex-detail">4 &times; 8-10 &middot; Barbell or Trap Bar</div>
     </div>
   </div>
 
@@ -309,8 +404,8 @@
     <input type="checkbox" />
     <div class="ex-id" style="color:#4a7c4f"><span>A2</span></div>
     <div class="ex-body">
-      <div class="ex-name">Incline DB Press <span class="tag tag-push">Push</span></div>
-      <div class="ex-detail">3 &times; 8-10 &middot; Adjustable Bench + DBs</div>
+      <div class="ex-name">Incline DB Press <span class="tag tag-push">Push</span> <span class="chg">4 sets</span></div>
+      <div class="ex-detail">4 &times; 8-10 &middot; Adjustable Bench + DBs</div>
     </div>
   </div>
 
@@ -319,7 +414,7 @@
     <div class="ex-id" style="color:#c9a033"><span>B1</span></div>
     <div class="ex-body">
       <div class="ex-name">Bulgarian Split Squat <span class="tag tag-squat">Squat</span></div>
-      <div class="ex-detail">3 &times; 8/side &middot; Bench + DBs</div>
+      <div class="ex-detail">3 &times; 8-10/side &middot; Bench + DBs</div>
     </div>
   </div>
 
@@ -327,23 +422,41 @@
     <input type="checkbox" />
     <div class="ex-id" style="color:#5a7a52"><span>B2</span></div>
     <div class="ex-body">
-      <div class="ex-name">Rear Delt Machine <span class="tag tag-pull">Pull</span></div>
-      <div class="ex-detail">3 &times; 12-15 &middot; Life Fitness #276</div>
+      <div class="ex-name">Chest-Supported DB Row <span class="tag tag-pull">Pull</span> <span class="chg">new</span></div>
+      <div class="ex-detail">3 &times; 10-12 &middot; Incline Bench + DBs</div>
     </div>
   </div>
 
   <div class="exercise" data-id="c1">
     <input type="checkbox" />
-    <div class="ex-id" style="color:#8b7355"><span>C1</span></div>
+    <div class="ex-id" style="color:#a05a3c"><span>C1</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Cable Pushdown <span class="tag tag-arms">Arms</span> <span class="chg">new</span></div>
+      <div class="ex-detail">3 &times; 10-12 &middot; Cable Station</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="c2">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#5a7a52"><span>C2</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Rear Delt Machine <span class="tag tag-pull">Pull</span></div>
+      <div class="ex-detail">2 &times; 15 &middot; Life Fitness #276</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="d1">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#8b7355"><span>D1</span></div>
     <div class="ex-body">
       <div class="ex-name">Pallof Press <span class="tag tag-core">Core</span></div>
       <div class="ex-detail">2 &times; 10/side &middot; Cable Station</div>
     </div>
   </div>
 
-  <div class="exercise" data-id="c2">
+  <div class="exercise" data-id="d2">
     <input type="checkbox" />
-    <div class="ex-id" style="color:#7a7a6a"><span>C2</span></div>
+    <div class="ex-id" style="color:#7a7a6a"><span>D2</span></div>
     <div class="ex-body">
       <div class="ex-name">Farmer's Carry <span class="tag tag-carry">Carry</span></div>
       <div class="ex-detail">2 &times; 45 sec &middot; Heavy Dumbbells</div>
@@ -355,7 +468,7 @@
     Static stretches for worked muscles (30-60 sec holds) &middot; Optional: 1-2 min box breathing
   </div>
 
-  <div class="progress" id="progress-a">0 / 6 completed</div>
+  <div class="progress" id="progress-a">0 / 8 completed</div>
   <div class="reset-wrap"><button class="reset-btn" data-session="a">Reset Session A</button></div>
 </div>
 
@@ -365,15 +478,17 @@
     <span class="badge">A1+A2 Superset</span>
     <span class="badge">B1+B2 Superset</span>
     <span class="badge">C1+C2 Superset</span>
-    <span class="badge">Rest 90s Between</span>
+    <span class="badge">D1+D2 Superset</span>
+    <span class="badge">Rest 120s on A &middot; 90s rest</span>
+    <span class="badge effort">Last set RPE 8-9</span>
   </div>
 
   <div class="exercise" data-id="a1">
     <input type="checkbox" />
     <div class="ex-id" style="color:#c9a033"><span>A1</span></div>
     <div class="ex-body">
-      <div class="ex-name">Goblet Squat <span class="tag tag-squat">Squat</span></div>
-      <div class="ex-detail">3 &times; 10 &middot; Single DB at Chest</div>
+      <div class="ex-name">Hack Squat or Leg Press <span class="tag tag-squat">Squat</span> <span class="chg">new</span></div>
+      <div class="ex-detail">4 &times; 8-10 &middot; Machine &middot; replaces Goblet Squat</div>
     </div>
   </div>
 
@@ -381,8 +496,8 @@
     <input type="checkbox" />
     <div class="ex-id" style="color:#5a7a52"><span>A2</span></div>
     <div class="ex-body">
-      <div class="ex-name">Assisted Chin-Up <span class="tag tag-pull">Pull</span></div>
-      <div class="ex-detail">3 &times; 6-10 &middot; Life Fitness #273</div>
+      <div class="ex-name">Assisted Chin-Up <span class="tag tag-pull">Pull</span> <span class="chg">4 sets</span></div>
+      <div class="ex-detail">4 &times; 6-10 &middot; Life Fitness #273</div>
     </div>
   </div>
 
@@ -390,8 +505,8 @@
     <input type="checkbox" />
     <div class="ex-id" style="color:#b8963e"><span>B1</span></div>
     <div class="ex-body">
-      <div class="ex-name">DB Step-Up <span class="tag tag-squat">Squat</span></div>
-      <div class="ex-detail">3 &times; 8/side &middot; 20-25cm Box, DB in Opposite Hand</div>
+      <div class="ex-name">Lying Leg Curl <span class="tag tag-hinge">Hinge</span> <span class="chg">new</span></div>
+      <div class="ex-detail">3 &times; 10-12 &middot; Machine &middot; replaces DB Step-Up</div>
     </div>
   </div>
 
@@ -399,35 +514,53 @@
     <input type="checkbox" />
     <div class="ex-id" style="color:#4a7c4f"><span>B2</span></div>
     <div class="ex-body">
-      <div class="ex-name">DB Overhead Press <span class="tag tag-push">Push</span></div>
-      <div class="ex-detail">3 &times; 8-10 &middot; Dumbbells, Standing</div>
+      <div class="ex-name">Pec Fly Machine <span class="tag tag-push">Push</span> <span class="chg">moved up</span></div>
+      <div class="ex-detail">3 &times; 10-12 &middot; Life Fitness #276</div>
     </div>
   </div>
 
   <div class="exercise" data-id="c1">
     <input type="checkbox" />
-    <div class="ex-id" style="color:#5a7a52"><span>C1</span></div>
+    <div class="ex-id" style="color:#4a7c4f"><span>C1</span></div>
+    <div class="ex-body">
+      <div class="ex-name">DB Overhead Press <span class="tag tag-push">Push</span></div>
+      <div class="ex-detail">3 &times; 8-10 &middot; Dumbbells, Standing</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="c2">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#5a7a52"><span>C2</span></div>
     <div class="ex-body">
       <div class="ex-name">Seated Low Row <span class="tag tag-pull">Pull</span></div>
       <div class="ex-detail">3 &times; 10-12 &middot; Life Fitness #687</div>
     </div>
   </div>
 
-  <div class="exercise" data-id="c2">
+  <div class="exercise" data-id="d1">
     <input type="checkbox" />
-    <div class="ex-id" style="color:#6b6b6b"><span>C2</span></div>
+    <div class="ex-id" style="color:#a05a3c"><span>D1</span></div>
     <div class="ex-body">
-      <div class="ex-name">Dead Hang <span class="tag tag-grip">Grip</span></div>
-      <div class="ex-detail">2 &times; max hold &middot; Chin-Up Bar on #273</div>
+      <div class="ex-name">DB Curl <span class="tag tag-arms">Arms</span> <span class="chg">new</span></div>
+      <div class="ex-detail">3 &times; 10-12 &middot; Dumbbells</div>
     </div>
   </div>
 
-  <div class="exercise" data-id="d">
+  <div class="exercise" data-id="d2">
     <input type="checkbox" />
-    <div class="ex-id" style="color:#4a7c4f"><span>D</span></div>
+    <div class="ex-id" style="color:#b07050"><span>D2</span></div>
     <div class="ex-body">
-      <div class="ex-name">Pec Fly Machine <span class="tag tag-push">Push</span></div>
-      <div class="ex-detail">2 &times; 12 &middot; Life Fitness #276</div>
+      <div class="ex-name">Standing Calf Raise <span class="tag tag-calf">Calf</span> <span class="chg">new</span></div>
+      <div class="ex-detail">3 &times; 12-15 &middot; Machine or Step</div>
+    </div>
+  </div>
+
+  <div class="exercise" data-id="e">
+    <input type="checkbox" />
+    <div class="ex-id" style="color:#6b6b6b"><span>E</span></div>
+    <div class="ex-body">
+      <div class="ex-name">Dead Hang <span class="tag tag-grip">Grip</span></div>
+      <div class="ex-detail">2 &times; max hold &middot; Chin-Up Bar on #273</div>
     </div>
   </div>
 
@@ -436,10 +569,64 @@
     Static stretches for worked muscles (30-60 sec holds) &middot; Optional: 1-2 min box breathing
   </div>
 
-  <div class="progress" id="progress-b">0 / 7 completed</div>
+  <div class="progress" id="progress-b">0 / 9 completed</div>
   <div class="reset-wrap"><button class="reset-btn" data-session="b">Reset Session B</button></div>
 </div>
 
+<!-- PLAN -->
+<div class="session" id="session-p">
+  <div class="card">
+    <h2>Week</h2>
+    <div class="week">
+      <div class="wd"><b>Mon</b><span class="lift">Session A</span></div>
+      <div class="wd"><b>Tue</b><span>Zone 2 / Yoga</span></div>
+      <div class="wd"><b>Wed</b><span class="hiit">SkiErg Tabata</span></div>
+      <div class="wd"><b>Thu</b><span>Rest</span></div>
+      <div class="wd"><b>Fri</b><span class="lift">Session B</span></div>
+      <div class="wd"><b>Sat</b><span class="hiit">SkiErg Tabata</span></div>
+      <div class="wd"><b>Sun</b><span>Hike / Ride</span></div>
+    </div>
+    <p style="margin-top:10px">Tabata sits 48h clear of both lifts. SkiErg is lat and trunk dominant, so it never pre-fatigues legs &mdash; but keep it off the day before Session B, which pulls heavy.</p>
+  </div>
+
+  <div class="card">
+    <h2>Weekly hard sets &mdash; before / after</h2>
+    <div class="vrow"><span class="vmus">Chest</span><span class="vbars"><span class="vbar" style="width:42%"></span><span class="vbar aft" style="width:58%"></span></span><span class="vnum">5 &rarr; <b>7</b></span></div>
+    <div class="vrow"><span class="vmus">Back / Lats</span><span class="vbars"><span class="vbar" style="width:75%"></span><span class="vbar aft" style="width:100%"></span></span><span class="vnum">9 &rarr; <b>12</b></span></div>
+    <div class="vrow"><span class="vmus">Quads</span><span class="vbars"><span class="vbar" style="width:75%"></span><span class="vbar cut" style="width:58%"></span></span><span class="vnum down">9 &rarr; <b>7</b></span></div>
+    <div class="vrow"><span class="vmus">Hamstrings</span><span class="vbars"><span class="vbar" style="width:25%"></span><span class="vbar aft" style="width:58%"></span></span><span class="vnum">3 &rarr; <b>7</b></span></div>
+    <div class="vrow"><span class="vmus">Shoulders</span><span class="vbars"><span class="vbar" style="width:25%"></span><span class="vbar aft" style="width:42%"></span></span><span class="vnum">3 &rarr; <b>5</b></span></div>
+    <div class="vrow"><span class="vmus">Biceps</span><span class="vbars"><span class="vbar" style="width:2%"></span><span class="vbar aft" style="width:25%"></span></span><span class="vnum">0 &rarr; <b>3</b></span></div>
+    <div class="vrow"><span class="vmus">Triceps</span><span class="vbars"><span class="vbar" style="width:2%"></span><span class="vbar aft" style="width:25%"></span></span><span class="vnum">0 &rarr; <b>3</b></span></div>
+    <div class="vrow"><span class="vmus">Calves</span><span class="vbars"><span class="vbar" style="width:2%"></span><span class="vbar aft" style="width:25%"></span></span><span class="vnum">0 &rarr; <b>3</b></span></div>
+    <p class="vlegend">Top bar before &middot; bottom bar after. Working sets at RPE 8-9 only; warm-ups don't count.</p>
+  </div>
+
+  <div class="card">
+    <h2>Quads went down on purpose</h2>
+    <p>9 sets to 7. Goblet squat and DB step-up were capped by grip and how much you can hold at your chest, not by your legs. Hack squat loads the quad directly and keeps progressing for years. Seven loadable sets beat nine grip-limited ones.</p>
+    <p>Chest at 7 is the remaining tight spot &mdash; enough to grow on, first place to add if this ever goes to 3 sessions.</p>
+  </div>
+
+  <div class="card">
+    <h2>Progression</h2>
+    <p><b>Double progression.</b> Top of the rep range on every set &rarr; add 5 lb upper / 10 lb lower next session. Otherwise stay at the same load and add reps.</p>
+    <p><b>Every 4th week:</b> 2 sets per exercise at 60% load. Still show up.</p>
+    <p><b>Rotate variations</b> every 8-12 weeks.</p>
+  </div>
+
+  <div class="card">
+    <h2>Fuel &mdash; E</h2>
+    <p>~3000-3200 kcal/day, 120-140 g protein. Weigh in weekly, same conditions, morning. Flat for 3 weeks &rarr; add 200 kcal. Target +0.3-0.5 kg per month, no faster.</p>
+    <p>Creatine monohydrate 5 g/day. Sleep 7-8h &mdash; at 6h, protein synthesis drops measurably.</p>
+  </div>
+
+  <div class="card">
+    <h2>SkiErg Tabata</h2>
+    <p>20s all-out / 10s rest &times; 8. Four minutes of work. SPM 45-55, power from the hip hinge and trunk through the lats.</p>
+    <p><b>Round 8 should be 25-40% below round 1.</b> If it isn't, you paced it. Log average watts across all 8 rounds &mdash; that number is the progression metric, retest every 8-12 weeks.</p>
+  </div>
+</div>
 
 <script src="app.js"></script>
 
