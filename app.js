@@ -98,6 +98,25 @@ function migrateWeights() {
 
 migrateWeights();
 
+// v4: Rear Delt Machine (session-a-c2) and Pec Fly Machine (session-b-b2)
+// were replaced by Face Pull and Neutral-Grip DB Press, which got their own
+// ids. Drop the retired lifts' weights so no future exercise that reuses
+// those ids inherits numbers from a different movement.
+var CLEANUP_V4_KEY = "workout-cleanup-v4";
+
+function cleanupRetiredV4() {
+  if (localStorage.getItem(CLEANUP_V4_KEY)) return;
+  var w = loadWeights();
+  ["session-a-c2", "session-b-b2"].forEach(function(k) {
+    delete w[k + "-weight-e"];
+    delete w[k + "-weight-k"];
+  });
+  saveWeights(w);
+  localStorage.setItem(CLEANUP_V4_KEY, "1");
+}
+
+cleanupRetiredV4();
+
 function toggleExercise(ex, cb, key, sessionId) {
   var s = loadState();
   s[key] = cb.checked;

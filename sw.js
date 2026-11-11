@@ -1,4 +1,4 @@
-var CACHE_NAME = "workout-v3";
+var CACHE_NAME = "workout-v4";
 var ASSETS = [
   "./",
   "./index.html",
